@@ -1,46 +1,67 @@
 import './App.css';
-import Navigation from './Components/Navigation';
-import Header from './Components/Header';
-import Title from './Components/Title';
-import NextMeetup from './Components/NextMeetup';
-import Member from './Components/Member';
-import PastMeetups from './Components/PastMeetups';
+import { useState } from 'react';
+import {
+  Button,
+  Collapse,
+  Navbar,
+  NavbarToggler,
+  NavbarBrand,
+  Nav,
+  NavItem,
+  NavLink
+} from 'reactstrap';
+import Logo from './assets/images/qtemu.png'
+import {
+  BrowserRouter as Router,
+  Switch,
+  Route,
+} from "react-router-dom";
+import Todo from "./pages/Todo";
+import Home from "./pages/Home";
+import ModalAddEvent from 'components/ModalAddEvent';
 
 function App() {
+  const [isCollapseOpen, setIsCollapseOpen] = useState(false);
+  const [isModalOpen, setIsModalOpen] = useState(false);
+  const toggle = () => setIsCollapseOpen(!isCollapseOpen);
+  const toggleModal = () => setIsModalOpen(!isModalOpen);
   return (
     <div className="App">
-      <Navigation />
-      <div className="container">
-        <section id="header">
-          <Header />
-        </section>
-        <section id="next-meextup">
-          <Title>Next Meetup</Title>
-          <NextMeetup />
-        </section>
-        <section id="about-meetup">
-          <Title>About Meetup</Title>
-          <p>Come and meet other developers interested in the Javascript and it's library in the Greater Jakarta area</p>
-          <p>Twitter: <a href="https://twitter.com/jakartajs">@JakartaJS</a> and we use the hashtag <a href="https://twitter.com/hashtag/jakartajs?src=hashtag_click">#JakartaJS</a></p>
-        </section>
-        <section id="members">
-          <div class="d-flex flex-row justify-content-between">
-            <Title>Members</Title>
-            <a href="meetup.com">See All</a>
-          </div>
-          <Member />
-        </section>
-        <section id="past-meetups">
-          <div class="d-flex flex-row justify-content-between">
-            <Title>Past Meetups</Title>
-            <a href="meetup.com">See All</a>
-          </div>
-          <PastMeetups/>
-        </section>
-        <section id="footer" className="text-center">
-          <b>Copyright Hacktiv8 @2021</b>
-        </section>
-      </div>
+      <Router>
+        <Navbar color="light" light expand="md">
+          <NavbarBrand href="/">
+              <img src={Logo} alt="Logo" style={{ width: "32px" }} className="mr-2" />
+              QTemu
+          </NavbarBrand>
+          <NavbarToggler onClick={toggle} />
+          <Collapse isOpen={isCollapseOpen} navbar>
+            <Nav className="mr-auto" navbar>
+              <NavItem>
+                <NavLink href="#explore">Explore</NavLink>
+              </NavItem>
+              <NavItem>
+                <NavLink href="/todo">To Do List
+                </NavLink>
+              </NavItem>
+            </Nav>
+            <Button onClick={toggleModal} color="primary">Create Meetup</Button>
+          </Collapse>
+        </Navbar>
+        <ModalAddEvent isOpen={isModalOpen} handleCloseModal={toggleModal}/>
+        <div className="container">
+          <Switch>
+            <Route path="/todo">
+              <Todo />
+            </Route>
+            <Route path="/">
+              <Home />
+            </Route>
+          </Switch>
+          <section id="footer" className="text-center">
+            <b>Copyright Hacktiv8 @2021</b>
+          </section>
+        </div>
+      </Router>
     </div>
   );
 }
